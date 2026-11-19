@@ -1,0 +1,35 @@
+name: Build jar
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Find project folder
+        id: p
+        run: echo "dir=$(dirname "$(find . -name gradlew -not -path './.git/*' | head -1)")" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 25
+          cache: gradle
+
+      - name: Build
+        working-directory: ${{ steps.p.outputs.dir }}
+        run: |
+          chmod +x gradlew
+          ./gradlew build
+
+      - name: Upload jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: voidreaver-jar
+          path: |
+            ${{ steps.p.outputs.dir }}/build/libs/*.jar
+            !${{ steps.p.outputs.dir }}/build/libs/*-sources.jar
