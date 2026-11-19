@@ -27,6 +27,7 @@ final class ChainState {
 	int pullTicks;
 	/** The last velocity we ordered ends exactly on the target's surface; next tick the pull is over. */
 	boolean reachedLastTick;
+	Vec3 lastTargetCenter = Vec3.ZERO;
 
 	ChainState(UUID owner, ServerLevel level, boolean mainHand, Vec3 origin, Vec3 dir) {
 		this.owner = owner;
